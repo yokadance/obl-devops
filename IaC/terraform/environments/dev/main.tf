@@ -8,14 +8,12 @@ terraform {
     }
   }
 
-  # Descomentar después de crear el bucket S3 manualmente
-  # backend "s3" {
-  #   bucket         = "stockwiz-terraform-state-dev"
-  #   key            = "dev/terraform.tfstate"
-  #   region         = "us-east-1"
-  #   encrypt        = true
-  #   dynamodb_table = "terraform-state-lock"
-  # }
+  backend "s3" {
+    bucket  = "stockwiz-terraform-state-493930199663"
+    key     = "dev/terraform.tfstate"
+    region  = "us-east-1"
+    encrypt = true
+  }
 }
 
 provider "aws" {
@@ -77,6 +75,7 @@ module "ecs" {
   api_gateway_ecr_url       = module.ecr.api_gateway_repository_url
   product_service_ecr_url   = module.ecr.product_service_repository_url
   inventory_service_ecr_url = module.ecr.inventory_service_repository_url
+  postgres_ecr_url          = module.ecr.postgres_repository_url
 
   # Configuración de las tareas
   desired_count = var.ecs_desired_count

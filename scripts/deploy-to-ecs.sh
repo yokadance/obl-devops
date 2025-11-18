@@ -113,25 +113,13 @@ force_new_deployment() {
 # Procesar servicios según el parámetro
 deploy_service() {
     case $1 in
-        api-gateway)
-            force_new_deployment "api-gateway"
-            ;;
-        product-service)
-            force_new_deployment "product-service"
-            ;;
-        inventory-service)
-            force_new_deployment "inventory-service"
-            ;;
-        all)
-            force_new_deployment "api-gateway"
-            echo ""
-            force_new_deployment "product-service"
-            echo ""
-            force_new_deployment "inventory-service"
+        api-gateway|product-service|inventory-service|all|stockwiz)
+            # Ahora todos los servicios están en una sola task definition unificada
+            force_new_deployment "stockwiz"
             ;;
         *)
             echo -e "${RED}Error: Servicio desconocido '$1'${NC}"
-            echo "Servicios válidos: api-gateway, product-service, inventory-service, all"
+            echo "Servicios válidos: stockwiz, all"
             exit 1
             ;;
     esac

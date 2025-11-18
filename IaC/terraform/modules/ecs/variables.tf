@@ -48,6 +48,11 @@ variable "inventory_service_ecr_url" {
   type        = string
 }
 
+variable "postgres_ecr_url" {
+  description = "ECR repository URL for PostgreSQL"
+  type        = string
+}
+
 variable "desired_count" {
   description = "Desired number of tasks"
   type        = number

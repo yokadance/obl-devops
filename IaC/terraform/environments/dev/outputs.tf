@@ -19,6 +19,11 @@ output "inventory_service_ecr_url" {
   value       = module.ecr.inventory_service_repository_url
 }
 
+output "postgres_ecr_url" {
+  description = "PostgreSQL ECR repository URL"
+  value       = module.ecr.postgres_repository_url
+}
+
 # ALB
 output "alb_dns_name" {
   description = "ALB DNS name"

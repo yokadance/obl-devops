@@ -6,7 +6,7 @@ resource "aws_lb" "main" {
   subnets            = var.public_subnet_ids
 
   enable_deletion_protection = false
-  enable_http2              = true
+  enable_http2               = true
 
   tags = {
     Name = "${var.environment}-alb"
@@ -25,8 +25,8 @@ resource "aws_lb_target_group" "api_gateway" {
     enabled             = true
     healthy_threshold   = 2
     unhealthy_threshold = 3
-    timeout             = 5
-    interval            = 30
+    timeout             = 10
+    interval            = 60
     path                = "/health"
     protocol            = "HTTP"
     matcher             = "200"
@@ -51,8 +51,8 @@ resource "aws_lb_target_group" "product_service" {
     enabled             = true
     healthy_threshold   = 2
     unhealthy_threshold = 3
-    timeout             = 5
-    interval            = 30
+    timeout             = 10
+    interval            = 60
     path                = "/health"
     protocol            = "HTTP"
     matcher             = "200"
@@ -77,8 +77,8 @@ resource "aws_lb_target_group" "inventory_service" {
     enabled             = true
     healthy_threshold   = 2
     unhealthy_threshold = 3
-    timeout             = 5
-    interval            = 30
+    timeout             = 10
+    interval            = 60
     path                = "/health"
     protocol            = "HTTP"
     matcher             = "200"
@@ -135,3 +135,6 @@ resource "aws_lb_listener_rule" "inventory_service" {
     }
   }
 }
+
+
+//Description autogeneradas con cursor

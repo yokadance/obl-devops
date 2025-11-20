@@ -3,20 +3,20 @@
 # ============================================
 # Build and Push Docker Images to ECR
 # ============================================
-# Este script construye las imágenes Docker de los servicios
-# de StockWiz y las sube a Amazon ECR
+# Este script construye las imágenes Docker de los servicios correspondientes y los sube a amazon (al ECR)
 #
-# Uso:
+# Como lo usamos :
 #   ./scripts/build-and-push-ecr.sh [environment] [service]
 #
 # Parámetros:
 #   environment: dev, stage, prod (default: dev)
-#   service: api-gateway, product-service, inventory-service, all (default: all)
+#   service: api-gateway, product-service, inventory-service, postgres, all (default: all)
 #
 # Ejemplos:
 #   ./scripts/build-and-push-ecr.sh dev all
 #   ./scripts/build-and-push-ecr.sh dev api-gateway
 #   ./scripts/build-and-push-ecr.sh prod product-service
+#   ./scripts/build-and-push-ecr.sh dev postgres
 
 set -e
 
@@ -143,14 +143,18 @@ process_service() {
         inventory-service)
             build_and_push "inventory-service" "inventory-service"
             ;;
+        postgres)
+            build_and_push "postgres" "postgres"
+            ;;
         all)
             build_and_push "api-gateway" "api-gateway"
             build_and_push "product-service" "product-service"
             build_and_push "inventory-service" "inventory-service"
+            build_and_push "postgres" "postgres"
             ;;
         *)
             echo -e "${RED}Error: Servicio desconocido '$1'${NC}"
-            echo "Servicios válidos: api-gateway, product-service, inventory-service, all"
+            echo "Servicios válidos: api-gateway, product-service, inventory-service, postgres, all"
             exit 1
             ;;
     esac

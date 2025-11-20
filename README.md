@@ -851,6 +851,11 @@ obl-devops/
 
 ---
 
-**Desarrollado por el equipo DevOps de StockWiz**
+**scripts**
 
-Para preguntas o soporte, contactar al equipo de DevOps.
+Todo se automatizo en la medida que se pudo con bash script:
+
+scripts/
+├── build-and-push-ecr.sh    # 🔨 Build + Push al ECR (con versionado)
+├── deploy-to-ecs.sh         # ♻️  Solo deploy/update al ECS
+└──  build-push-deploy.sh     # 🚀 Orquestador completo (de los otros dos scripts )

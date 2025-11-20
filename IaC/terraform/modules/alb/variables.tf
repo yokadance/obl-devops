@@ -17,3 +17,6 @@ variable "security_group_id" {
   description = "Security group ID for ALB"
   type        = string
 }
+
+
+//Description autogeneradas con cursor

@@ -18,3 +18,5 @@ output "redis_access_point_id" {
   description = "EFS access point ID for Redis"
   value       = aws_efs_access_point.redis.id
 }
+
+//Description autogeneradas con cursor

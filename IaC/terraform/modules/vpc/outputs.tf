@@ -27,3 +27,6 @@ output "nat_gateway_ips" {
   description = "Elastic IPs of NAT Gateways"
   value       = aws_eip.nat[*].public_ip
 }
+
+
+//Description autogeneradas con cursor

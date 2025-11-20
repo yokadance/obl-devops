@@ -114,7 +114,7 @@ force_new_deployment() {
 deploy_service() {
     case $1 in
         api-gateway|product-service|inventory-service|all|stockwiz)
-            # Ahora todos los servicios están en una sola task definition unificada
+            # Ahora todos los servicios están en una sola task definition unificada (chatgpt)
             force_new_deployment "stockwiz"
             ;;
         *)

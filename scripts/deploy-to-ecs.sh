@@ -86,6 +86,15 @@ force_new_deployment() {
     echo -e "\n${YELLOW}Esperando a que el servicio se estabilice...${NC}"
     echo -e "${YELLOW}Esto puede tomar varios minutos...${NC}"
 
+## ##
+#El waiter <services-stable> del aws cli verifica que:
+#Todas las tareas deseadas del servicio están corriendo.
+#Todas las tareas pasaron su health check (si usan ELB/ALB).
+#No hay tareas fallando, reiniciándose o en estado PENDING.
+#La última actualización del servicio ya terminó (por ejemplo, un nuevo deployment).
+## ##
+
+
     aws ecs wait services-stable \
         --cluster $CLUSTER_NAME \
         --services $ecs_service_name \
@@ -114,12 +123,12 @@ force_new_deployment() {
 deploy_service() {
     case $1 in
         api-gateway|product-service|inventory-service|all|stockwiz)
-            # Ahora todos los servicios están en una sola task definition unificada (chatgpt)
+            # Ahora todos los servicios estan en una sola task definition unificada
             force_new_deployment "stockwiz"
             ;;
         *)
-            echo -e "${RED}Error: Servicio desconocido '$1'${NC}"
-            echo "Servicios válidos: stockwiz, all"
+            echo -e "${RED}Error: Servicio desconocido  '$1'${NC}"
+            echo "Servicios validos: stockwiz, all"
             exit 1
             ;;
     esac

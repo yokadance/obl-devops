@@ -22,3 +22,5 @@ output "stockwiz_task_definition_arn" {
   description = "StockWiz task definition ARN"
   value       = aws_ecs_task_definition.stockwiz.arn
 }
+
+//Description autogeneradas con cursor

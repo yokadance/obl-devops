@@ -82,12 +82,9 @@ docker-build: ## Construir imágenes Docker localmente
 	docker build -t inventory-service:$(TAG) -f $(APP_DIR)/inventory-service/Dockerfile $(APP_DIR)/inventory-service
 	@echo "✓ Imágenes construidas exitosamente"
 
-docker-push: ecr-login ## Pushear imágenes a ECR
-	@echo "Pusheando imágenes a ECR para entorno: $(ENV)"
-	@./scripts/build-and-push.sh $(ENV) $(TAG)
-
-docker-build-push: docker-build docker-push ## Build y push en un solo comando
-	@echo "✓ Build y push completados"
+docker-build-push: ## Build y push de todos los servicios usando el script principal
+	@echo "Build y push de todos los servicios para entorno: $(ENV)"
+	@./scripts/build-and-push-ecr.sh $(ENV) all
 
 ecr-build-push-all: ## Build y push todos los servicios a ECR (script automatizado)
 	@echo "Build y push de todos los servicios para entorno: $(ENV)"

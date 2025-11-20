@@ -8,6 +8,8 @@ terraform {
     }
   }
 
+  #Guardamos el tfstate de forma segura multiusuario y recuperable
+
   backend "s3" {
     bucket  = "stockwiz-terraform-state-493930199663"
     key     = "dev/terraform.tfstate"

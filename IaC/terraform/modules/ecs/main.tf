@@ -27,16 +27,14 @@ data "aws_iam_role" "lab" {
 }
 data "aws_region" "current" {}
 
-# ============================================
-# UNIFIED TASK DEFINITION - All Services in One Task
-# ============================================
+
 
 resource "aws_ecs_task_definition" "stockwiz" {
   family                   = "${var.environment}-stockwiz"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "2048"  # 2 vCPU para 5 contenedores (PostgreSQL, Redis, 3 services)
-  memory                   = "4096"  # 4GB para 5 contenedores
+  cpu                      = "2048" # 2 vCPU para 5 contenedores (PostgreSQL, Redis, 3 services)
+  memory                   = "4096" # 4GB para 5 contenedores
   execution_role_arn       = data.aws_iam_role.lab.arn
   task_role_arn            = data.aws_iam_role.lab.arn
 
@@ -329,7 +327,7 @@ resource "aws_ecs_service" "stockwiz" {
     container_port   = 8002
   }
 
-  health_check_grace_period_seconds = 120
+  health_check_grace_period_seconds = 300
 
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100

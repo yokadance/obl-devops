@@ -32,3 +32,6 @@ output "http_listener_arn" {
   description = "ARN of HTTP listener"
   value       = aws_lb_listener.http.arn
 }
+
+
+//Description autogeneradas con cursor

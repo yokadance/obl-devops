@@ -9,27 +9,37 @@ Guía rápida para desplegar StockWiz en AWS usando Terraform y ECS.
 ```bash
 # Inicializar Terraform
 make terraform-init ENV=dev
+make terraform-init ENV=stage
+make terraform-init ENV=prod
+
 
 # Ver el plan
 make terraform-plan ENV=dev
+make terraform-plan ENV=stage
+make terraform-plan ENV=prod
 
 # Aplicar (crear VPC, ALB, ECR, ECS, etc.)
 make terraform-apply ENV=dev
+make terraform-apply ENV=stage
+make terraform-apply ENV=prod
+
 ```
 
 Esto creará:
 - ✅ VPC con subnets públicas y privadas
 - ✅ Application Load Balancer (ALB)
-- ✅ 3 Repositorios ECR (api-gateway, product-service, inventory-service)
+- ✅ 3 Repositorios ECR por enviroment (api-gateway-[env], product-service-[env], inventory-service-[env])
 - ✅ ECS Cluster con Fargate
 - ✅ 3 ECS Services con auto-scaling
-- ✅ CloudWatch Logs
+- ✅ CloudWatch Logs #falta
 
 ### 2. Build, Push y Deploy (Todo en Uno)
 
 ```bash
 # Opción más simple - hace todo automáticamente
 make deploy-all ENV=dev
+make deploy-all ENV=staege
+make deploy-all ENV=prod
 ```
 
 Este comando:
@@ -44,12 +54,11 @@ Este comando:
 ```bash
 # Obtener URL del ALB
 cd IaC/terraform/environments/dev
-terraform output alb_dns_name
+ejecutar terraform output alb_dns_name
 
 # Probar la aplicación
 curl http://<ALB-DNS>/health
-curl http://<ALB-DNS>/api/products
-curl http://<ALB-DNS>/api/inventory
+
 ```
 
 ## Comandos Alternativos
@@ -57,18 +66,18 @@ curl http://<ALB-DNS>/api/inventory
 ### Build y Push sin Deploy
 
 ```bash
-# Solo subir imágenes a ECR
+# Solo subir imágenes de DEV a ECR
 make ecr-build-push-all ENV=dev
 ```
 
-### Solo Deploy (si las imágenes ya están en ECR)
+### Solo Deploy de Dev (si las imágenes ya están en ECR)
 
 ```bash
 # Redesplegar servicios con las últimas imágenes
 make deploy-ecs ENV=dev
 ```
 
-### Deploy de un Servicio Específico
+### Deploy de un Servicio Específico en dev [sustituir por el ambiente deseado]
 
 ```bash
 # Solo API Gateway
@@ -133,9 +142,9 @@ make deploy-all ENV=dev            # Build + Push + Deploy (TODO)
 make deploy-ecs ENV=dev            # Solo deploy a ECS
 ```
 
-## Troubleshooting Rápido
+## Troubleshooting Rápido visto con chatgpt
 
-### Error: "no basic auth credentials"
+### Error: "no basic auth credentials" 
 ```bash
 make ecr-login ENV=dev
 ```
@@ -163,7 +172,7 @@ make terraform-apply ENV=dev
 make deploy-ecs ENV=dev
 ```
 
-## Costos Estimados (us-east-1)
+## Costos Estimados (us-east-1) segun IA
 
 Para el ambiente dev con 3 servicios (1 tarea cada uno):
 

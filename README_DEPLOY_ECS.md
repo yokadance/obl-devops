@@ -174,7 +174,7 @@ aws ecr describe-images \
 
 # 2. Actualizar la task definition para usar una imagen específica
 # Editar: IaC/terraform/modules/ecs/main.tf
-# Cambiar: image = "${var.api_gateway_ecr_url}:latest"
+# Cambiar: image = "${var._ecr_url}:latest"
 # Por: image = "${var.api_gateway_ecr_url}:20251118-143025-a1b2c3d"
 
 # 3. Aplicar cambios
@@ -286,15 +286,6 @@ Las task definitions incluyen variables de entorno predefinidas:
 - `DATABASE_URL`: postgres://admin:admin123@localhost:5432/microservices_db?sslmode=disable
 - `REDIS_URL`: localhost:6379
 
-**Nota**: Estas URLs apuntan a localhost porque en el futuro deberás configurar RDS y ElastiCache. Por ahora, los servicios funcionarán sin base de datos.
-
-## Próximos Pasos
-
-1. **Configurar RDS** para PostgreSQL
-2. **Configurar ElastiCache** para Redis
-3. **Actualizar task definitions** con las URLs reales de RDS y ElastiCache
-4. **Configurar Service Discovery** para comunicación entre microservicios
-5. **Implementar CI/CD** con GitHub Actions o GitLab CI
 
 ## Comandos Útiles
 
@@ -321,8 +312,3 @@ make get-ecr-urls ENV=dev
 cd IaC/terraform/environments/dev && terraform output alb_dns_name
 ```
 
-## Recursos Adicionales
-
-- [README_DOCKER_ECR.md](README_DOCKER_ECR.md) - Guía de ECR
-- [Documentación de ECS](https://docs.aws.amazon.com/ecs/)
-- [Documentación de Fargate](https://docs.aws.amazon.com/fargate/)

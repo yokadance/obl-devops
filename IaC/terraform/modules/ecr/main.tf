@@ -179,3 +179,4 @@ resource "aws_ecr_lifecycle_policy" "postgres" {
 }
 
 
+//Description autogeneradas con cursor

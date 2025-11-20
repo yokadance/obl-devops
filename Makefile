@@ -1,4 +1,4 @@
-.PHONY: help terraform-init terraform-plan terraform-apply terraform-destroy docker-build docker-push docker-build-push ecr-login ecr-build-push-all ecr-build-push-service deploy-ecs deploy-all
+.PHONY: help setup-backend terraform-init terraform-plan terraform-apply terraform-destroy docker-build docker-push docker-build-push ecr-login ecr-build-push-all ecr-build-push-service deploy-ecs deploy-all report view-report setup-and-deploy
 
 # Variables
 ENV ?= dev
@@ -9,6 +9,9 @@ APP_DIR = app/StockWiz
 
 help: ## Mostrar esta ayuda
 	@echo "Comandos disponibles:"
+	@echo ""
+	@echo "Setup Inicial:"
+	@echo "  make setup-backend              - Configurar backend S3 (ejecutar UNA VEZ al inicio)"
 	@echo ""
 	@echo "Terraform:"
 	@echo "  make terraform-init ENV=dev     - Inicializar Terraform para un entorno"
@@ -28,11 +31,29 @@ help: ## Mostrar esta ayuda
 	@echo "  make deploy-ecs ENV=dev SERVICE=all           - Desplegar servicios a ECS"
 	@echo "  make deploy-all ENV=dev                       - Build, push y deploy completo (recomendado)"
 	@echo ""
+	@echo "Reportes:"
+	@echo "  make report ENV=dev                           - Generar reporte HTML y abrir en navegador"
+	@echo "  make view-report ENV=dev                      - Abrir reporte existente en navegador"
+	@echo ""
+	@echo "Flujo Completo:"
+	@echo "  make setup-and-deploy ENV=dev                 - Init + Apply + Build + Push + Deploy + Reporte"
+	@echo ""
 	@echo "Ejemplos:"
-	@echo "  make terraform-apply ENV=dev"
-	@echo "  make deploy-all ENV=dev                       # Deploy completo"
+	@echo "  make setup-backend                            # Primera vez: configurar S3"
+	@echo "  make setup-and-deploy ENV=dev                 # Despliegue completo desde cero"
+	@echo "  make terraform-apply ENV=dev                  # Solo infraestructura"
+	@echo "  make deploy-all ENV=dev                       # Deploy completo (asume infra existente)"
 	@echo "  make ecr-build-push-all ENV=dev               # Solo build y push"
 	@echo "  make deploy-ecs ENV=dev SERVICE=api-gateway   # Deploy un servicio"
+	@echo "  make report ENV=dev                           # Ver estado del deployment"
+
+# ============================================
+# SETUP INICIAL
+# ============================================
+
+setup-backend: ## Configurar backend S3 con tu AWS Account ID (ejecutar UNA VEZ)
+	@echo "⚙️  Configurando backend S3 para Terraform..."
+	@./scripts/setup-terraform-backend.sh
 
 # ============================================
 # TERRAFORM
@@ -116,6 +137,39 @@ deploy-all: ## Build, push y deploy completo (SERVICE=all por defecto)
 	@echo "🚀 Iniciando deploy completo para entorno: $(ENV)"
 	@./scripts/build-push-deploy.sh $(ENV) $(or $(SERVICE),all)
 
+setup-and-deploy: ## Flujo completo: Init + Apply infra + Build + Push + Deploy + Reporte
+	@echo "🚀 Iniciando setup y deploy completo para entorno: $(ENV)"
+	@echo ""
+	@echo "📋 Pasos a ejecutar:"
+	@echo "  1. Terraform Init"
+	@echo "  2. Terraform Apply (infraestructura)"
+	@echo "  3. Build imágenes Docker"
+	@echo "  4. Push a ECR"
+	@echo "  5. Deploy a ECS"
+	@echo "  6. Generar reporte HTML"
+	@echo ""
+	@read -p "¿Continuar? [Y/n] " -n 1 -r; \
+	echo; \
+	if [[ ! $$REPLY =~ ^[Nn]$$ ]]; then \
+		echo ""; \
+		echo "📦 [1/6] Inicializando Terraform..."; \
+		$(MAKE) terraform-init ENV=$(ENV) || exit 1; \
+		echo ""; \
+		echo "🏗️  [2/6] Aplicando infraestructura..."; \
+		$(MAKE) terraform-apply ENV=$(ENV) || exit 1; \
+		echo ""; \
+		echo "⏳ Esperando 10 segundos para que la infraestructura esté lista..."; \
+		sleep 10; \
+		echo ""; \
+		echo "🐳 [3-5/6] Build, Push y Deploy de servicios..."; \
+		$(MAKE) deploy-all ENV=$(ENV) || exit 1; \
+		echo ""; \
+		echo "✅ Setup y deploy completado exitosamente!"; \
+	else \
+		echo "Operación cancelada."; \
+		exit 1; \
+	fi
+
 # ============================================
 # UTILIDADES
 # ============================================
@@ -131,3 +185,28 @@ validate-terraform: ## Validar configuración de Terraform
 format-terraform: ## Formatear archivos Terraform
 	@echo "Formateando archivos Terraform..."
 	find IaC/terraform -name "*.tf" -exec terraform fmt {} \;
+
+# ============================================
+# REPORTES
+# ============================================
+
+report: ## Generar reporte HTML del deployment y abrirlo en el navegador
+	@echo "📊 Generando reporte de deployment para entorno: $(ENV)"
+	@./scripts/generate-deployment-report.sh $(ENV)
+
+view-report: ## Abrir reporte HTML existente en el navegador
+	@REPORT_FILE="deployment-report-$(ENV).html"; \
+	if [ -f "$$REPORT_FILE" ]; then \
+		echo "📄 Abriendo reporte: $$REPORT_FILE"; \
+		if [[ "$$OSTYPE" == "darwin"* ]]; then \
+			open "$$REPORT_FILE"; \
+		elif [[ "$$OSTYPE" == "linux-gnu"* ]]; then \
+			xdg-open "$$REPORT_FILE" 2>/dev/null || sensible-browser "$$REPORT_FILE" 2>/dev/null; \
+		else \
+			echo "Por favor abre manualmente: $$REPORT_FILE"; \
+		fi; \
+	else \
+		echo "❌ Error: No existe el reporte para $(ENV)"; \
+		echo "Ejecuta: make report ENV=$(ENV)"; \
+		exit 1; \
+	fi

@@ -66,3 +66,7 @@ echo -e "\n${CYAN}============================================${NC}"
 echo -e "${CYAN}Proceso completado exitosamente${NC}"
 echo -e "${CYAN}============================================${NC}"
 echo -e "\n${GREEN}Tus servicios han sido actualizados con las últimas imágenes${NC}"
+
+# Generar reporte HTML y abrirlo en el navegador
+echo -e "\n${CYAN}Generando reporte de despliegue...${NC}"
+./scripts/generate-deployment-report.sh $ENVIRONMENT

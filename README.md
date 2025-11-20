@@ -1,5 +1,70 @@
 # StockWiz - Sistema de Gestión de Productos e Inventario
 
+## 🚀 Quick Start - Deploy Completo
+
+### ⚙️ Prerequisito: Configurar Backend S3 (Solo primera vez)
+
+**IMPORTANTE**: Antes de ejecutar terraform por primera vez, debes configurar el backend S3 para que use tu cuenta de AWS:
+
+```bash
+make setup-backend
+```
+
+O directamente con el script:
+```bash
+./scripts/setup-terraform-backend.sh
+```
+
+Este script automáticamente:
+- ✅ Obtiene tu AWS Account ID
+- ✅ Crea el bucket S3 con el nombre `stockwiz-terraform-state-TU_ACCOUNT_ID`
+- ✅ Habilita versionado y encriptación
+- ✅ Actualiza todos los archivos `main.tf` con tu bucket
+
+**Solo necesitas ejecutarlo UNA VEZ por cuenta de AWS.**
+
+---
+
+### Comando TODO-EN-UNO para desplegar desde cero
+
+```bash
+make setup-and-deploy ENV=dev
+```
+
+Este comando ejecuta automáticamente:
+1. **Terraform Init** - Inicializa Terraform
+2. **Terraform Apply** - Crea toda la infraestructura (VPC, ALB, ECR, ECS, etc.)
+3. **Build** - Construye todas las imágenes Docker
+4. **Push** - Sube las imágenes a ECR
+5. **Deploy** - Despliega los servicios en ECS
+6. **Reporte** - Genera un HTML con toda la info y lo abre en el navegador
+
+### Otros ambientes:
+
+```bash
+# Para stage
+make setup-and-deploy ENV=stage
+
+# Para prod
+make setup-and-deploy ENV=prod
+```
+
+### Si la infraestructura ya existe:
+
+```bash
+# Solo rebuild y redeploy de servicios
+make deploy-all ENV=dev
+```
+
+### Ver estado del deployment:
+
+```bash
+# Genera reporte HTML con URLs, health status, etc.
+make report ENV=dev
+```
+
+---
+
 ## Tabla de Contenidos
 - [Introducción](#introducción)
 - [Arquitectura General](#arquitectura-general)
@@ -859,3 +924,33 @@ scripts/
 ├── build-and-push-ecr.sh    # 🔨 Build + Push al ECR (con versionado)
 ├── deploy-to-ecs.sh         # ♻️  Solo deploy/update al ECS
 └──  build-push-deploy.sh     # 🚀 Orquestador completo (de los otros dos scripts )
+
+
+
+**reporte de despliege**
+
+###Comandos Makefile para Reportes:
+```
+Generar y abrir reporte
+make report ENV=dev
+make report ENV=stage
+make report ENV=prod
+```
+
+###Abrir reporte existente
+```
+make view-report ENV=dev
+make view-report ENV=stage
+make view-report ENV=prod
+Deploy completo (ahora incluye reporte automático)
+make deploy-all ENV=dev
+```
+
+###Cómo funciona:
+make report ENV=dev - Genera un nuevo reporte HTML con toda la información actualizada del ambiente y lo abre automáticamente en tu navegador
+
+make view-report ENV=dev - Abre el reporte HTML existente sin regenerarlo (útil si quieres volver a verlo)
+
+make deploy-all ENV=dev - Hace el build, push, deploy Y genera el reporte automáticamente al finalizar
+
+El reporte se guarda como deployment-report-{env}.html en la raíz del proyecto y puedes abrirlo manualmente en cualquier momento. ¿Quieres probar generando un reporte para algún ambiente?

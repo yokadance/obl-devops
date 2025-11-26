@@ -90,3 +90,15 @@ module "ecs" {
 
   depends_on = [module.alb, module.ecr]
 }
+
+# Monitoring Module
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  environment       = var.environment
+  aws_region        = var.aws_region
+  alb_dns_name      = module.alb.alb_dns_name
+  ecs_cluster_name  = module.ecs.cluster_name
+
+  depends_on = [module.alb, module.ecs]
+}

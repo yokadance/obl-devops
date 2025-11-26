@@ -31,6 +31,8 @@ API_GATEWAY_ECR=$(terraform -chdir=${TERRAFORM_DIR} output -raw api_gateway_ecr_
 PRODUCT_SERVICE_ECR=$(terraform -chdir=${TERRAFORM_DIR} output -raw product_service_ecr_url 2>/dev/null || echo "N/A")
 INVENTORY_SERVICE_ECR=$(terraform -chdir=${TERRAFORM_DIR} output -raw inventory_service_ecr_url 2>/dev/null || echo "N/A")
 POSTGRES_ECR=$(terraform -chdir=${TERRAFORM_DIR} output -raw postgres_ecr_url 2>/dev/null || echo "N/A")
+CLOUDWATCH_DASHBOARD_URL=$(terraform -chdir=${TERRAFORM_DIR} output -raw cloudwatch_dashboard_url 2>/dev/null || echo "N/A")
+HEALTH_CHECKER_LAMBDA=$(terraform -chdir=${TERRAFORM_DIR} output -raw health_checker_lambda 2>/dev/null || echo "N/A")
 
 # Verificar health check
 HEALTH_STATUS="Checking..."
@@ -272,6 +274,33 @@ cat > ${REPORT_FILE} << EOF
                 </div>
             </div>
 
+            <!-- Monitoring Section -->
+            <div class="section">
+                <h2>📊 Monitoring & CloudWatch</h2>
+                <div class="info-card">
+                    <h3>CloudWatch Dashboard</h3>
+                    <p>Dashboard con métricas en tiempo real</p>
+                    <div style="margin-top: 15px;">
+                        <a href="${CLOUDWATCH_DASHBOARD_URL}" target="_blank" class="button">Abrir Dashboard</a>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <h3>Health Checker Lambda</h3>
+                    <p>Función Lambda que verifica health cada 5 minutos</p>
+                    <p><code>${HEALTH_CHECKER_LAMBDA}</code></p>
+                </div>
+                <div class="info-card">
+                    <h3>Métricas Monitoreadas</h3>
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li>✅ Health checks (HTTP/HTTPS/API Gateway)</li>
+                        <li>📈 Tiempo de respuesta</li>
+                        <li>💻 CPU y Memoria de ECS</li>
+                        <li>🔢 Cantidad de requests al ALB</li>
+                        <li>⚠️ Códigos HTTP (2XX, 4XX, 5XX)</li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Quick Commands Section -->
             <div class="section">
                 <h2>⚡ Quick Commands</h2>
@@ -286,6 +315,10 @@ cat > ${REPORT_FILE} << EOF
                 <div class="info-card">
                     <h3>View Logs</h3>
                     <p><code>aws logs tail /ecs/stockwiz-${ENVIRONMENT} --follow</code></p>
+                </div>
+                <div class="info-card">
+                    <h3>Invoke Health Checker Lambda</h3>
+                    <p><code>aws lambda invoke --function-name ${HEALTH_CHECKER_LAMBDA} response.json</code></p>
                 </div>
             </div>
         </div>

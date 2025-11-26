@@ -30,22 +30,30 @@ output "alb_dns_name" {
   value       = module.alb.alb_dns_name
 }
 
-# output "ecs_cluster_name" {
-#   description = "ECS cluster name"
-#   value       = module.ecs.cluster_name
-# }
+# ECS
+output "ecs_cluster_name" {
+  description = "ECS cluster name"
+  value       = module.ecs.cluster_name
+}
 
-# output "cloudwatch_dashboard" {
-#   description = "CloudWatch dashboard name"
-#   value       = module.monitoring.dashboard_name
-# }
+# Monitoring
+output "cloudwatch_dashboard_name" {
+  description = "CloudWatch dashboard name"
+  value       = module.monitoring.dashboard_name
+}
 
-# output "vpc_id" {
-#   description = "VPC ID"
-#   value       = module.vpc.vpc_id
-# }
+output "cloudwatch_dashboard_url" {
+  description = "CloudWatch dashboard URL"
+  value       = module.monitoring.dashboard_url
+}
 
-# output "nat_gateway_ips" {
-#   description = "NAT Gateway IPs"
-#   value       = module.vpc.nat_gateway_ips
-# }
+output "health_checker_lambda" {
+  description = "Health Checker Lambda function name"
+  value       = module.monitoring.lambda_function_name
+}
+
+# VPC
+output "vpc_id" {
+  description = "VPC ID"
+  value       = module.vpc.vpc_id
+}

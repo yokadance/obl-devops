@@ -14,7 +14,11 @@ Simular una falla (por ejemplo, base de datos caída) y recibir una alerta de Cl
 
 ## 🔧 Setup Inicial
 
-### 1. Aplicar módulo de monitoring si no has corrido el script de build and deploy  [ make setup-and-deploy ENV=dev ]
+###⚠️ ATENCION si ya corriste el comando[ make setup-and-deploy ENV=dev ] que crea la infra y hace el deploy debes obviar este punto inicial
+
+### 1. Aplicar módulo de monitoring si no has ejecutado el script de build and deploy  [ make setup-and-deploy ENV=dev ]
+
+
 
 ```bash
 terraform -chdir=IaC/terraform/environments/dev apply

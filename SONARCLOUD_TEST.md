@@ -80,6 +80,12 @@ SONAR_PROJECT_KEY: stockwiz-devops
 
 AComo estamos usando un servicio gratuito, solo nos deja utlizar QG por defecto, si queremos agregar o cambiar los valores que trae hay que pagar.
 
+### 3.1 Importante Desactivar auto chckqueo en SQ
+
+-En SonarCloud, selecciona el proyecto "obl-devops"
+-Administration (menú lateral izquierdo) → Analysis Method
+-Deshabilita "Automatic Analysis"
+
 ---
 
 ### 4. Estructura del Proyecto

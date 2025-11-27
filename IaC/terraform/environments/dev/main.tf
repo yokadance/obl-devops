@@ -98,6 +98,7 @@ module "monitoring" {
   environment      = var.environment
   aws_region       = var.aws_region
   alb_dns_name     = module.alb.alb_dns_name
+  alb_arn_suffix   = module.alb.alb_arn_suffix
   ecs_cluster_name = module.ecs.cluster_name
   alert_email      = "yokadance@gmail.com" #donde alerta
 

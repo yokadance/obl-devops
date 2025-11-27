@@ -24,10 +24,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+          fetch-depth: 0  # Segun documentación es necesario para chequear codigo nuevo, mira y compara los commits actuales con los anteriores
+          submodules: recursive  # Es necesario esto porque incluimos el repo como submodulo.
 
       # ========================================
-      # Python Analysis (product-service)
+      # Python Analysis (product-service) -> Auto-generado 
       # ========================================
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -54,7 +55,7 @@ jobs:
         continue-on-error: true
 
       # ========================================
-      # Go Analysis (api-gateway, inventory-service)
+      # Go Analysis (api-gateway, inventory-service)  -> Auto-generado 
       # ========================================
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -78,7 +79,7 @@ jobs:
         continue-on-error: true
 
       # ========================================
-      # SonarCloud Scan
+      # SonarCloud Scan  -> Auto-generado 
       # ========================================
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
@@ -91,7 +92,7 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
       # ========================================
-      # Quality Gate Check
+      # Quality Gate Check  -> Auto-generado 
       # ========================================
       - name: SonarCloud Quality Gate check
         uses: SonarSource/sonarqube-quality-gate-action@master
@@ -101,7 +102,7 @@ jobs:
         continue-on-error: false
 
       # ========================================
-      # Report Results
+      # Report Results  -> Auto-generado 
       # ========================================
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4

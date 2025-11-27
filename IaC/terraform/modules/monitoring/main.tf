@@ -182,12 +182,17 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/ApplicationELB", "RequestCount", { stat = "Sum", label = "Total Requests" }],
+            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "Total Requests" }],
           ]
           period = 300
           stat   = "Sum"
           region = var.aws_region
-          title  = "API Gateway Requests"
+          title  = "ALB Request Count"
+          yAxis = {
+            left = {
+              min = 0
+            }
+          }
         }
       },
       # ALB Target Response Time
@@ -195,12 +200,17 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/ApplicationELB", "TargetResponseTime", { stat = "Average", label = "Target Response Time" }],
+            ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", var.alb_arn_suffix, { stat = "Average", label = "Target Response Time" }],
           ]
           period = 300
           stat   = "Average"
           region = var.aws_region
           title  = "ALB Target Response Time"
+          yAxis = {
+            left = {
+              min = 0
+            }
+          }
         }
       },
       # ALB HTTP Codes
@@ -208,14 +218,19 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/ApplicationELB", "HTTPCode_Target_2XX_Count", { stat = "Sum", label = "2XX Success" }],
-            [".", "HTTPCode_Target_4XX_Count", { stat = "Sum", label = "4XX Client Error" }],
-            [".", "HTTPCode_Target_5XX_Count", { stat = "Sum", label = "5XX Server Error" }],
+            ["AWS/ApplicationELB", "HTTPCode_Target_2XX_Count", "LoadBalancer", var.alb_arn_suffix, { stat = "Sum", label = "2XX Success" }],
+            [".", "HTTPCode_Target_4XX_Count", ".", ".", { stat = "Sum", label = "4XX Client Error" }],
+            [".", "HTTPCode_Target_5XX_Count", ".", ".", { stat = "Sum", label = "5XX Server Error" }],
           ]
           period = 300
           stat   = "Sum"
           region = var.aws_region
           title  = "HTTP Response Codes"
+          yAxis = {
+            left = {
+              min = 0
+            }
+          }
         }
       },
       # Lambda Invocations
@@ -223,12 +238,17 @@ resource "aws_cloudwatch_dashboard" "main" {
         type = "metric"
         properties = {
           metrics = [
-            ["AWS/Lambda", "Invocations", { stat = "Sum", label = "Health Checker Invocations" }],
+            ["AWS/Lambda", "Invocations", "FunctionName", "${var.environment}-stockwiz-health-checker", { stat = "Sum", label = "Health Checker Invocations" }],
           ]
           period = 300
           stat   = "Sum"
           region = var.aws_region
           title  = "Health Checker Lambda Invocations"
+          yAxis = {
+            left = {
+              min = 0
+            }
+          }
         }
       }
     ]

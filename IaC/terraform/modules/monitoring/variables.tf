@@ -14,9 +14,20 @@ variable "alb_dns_name" {
   type        = string
 }
 
+variable "alb_arn_suffix" {
+  description = "ALB ARN suffix for CloudWatch metrics (format: app/name/id)"
+  type        = string
+}
+
 variable "ecs_cluster_name" {
   description = "ECS Cluster name for alarms"
   type        = string
+}
+
+variable "lambda_function_name" {
+  description = "Lambda function name for CloudWatch metrics"
+  type        = string
+  default     = ""
 }
 
 variable "alert_email" {

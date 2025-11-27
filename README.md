@@ -1,5 +1,70 @@
 # StockWiz - Sistema de Gestión de Productos e Inventario
 
+## 📋 Índice
+
+- [Quick Start](#-quick-start---deploy-completo)
+- [CI/CD Pipeline](#-cicd-pipeline-automatizado)
+- [Monitoreo y Calidad](#-monitoreo-y-calidad-de-código)
+- [Comandos Útiles](#-comandos-útiles)
+- [Documentación](#-documentación)
+
+---
+
+## 🔄 CI/CD Pipeline Automatizado
+
+Este proyecto incluye un **pipeline CI/CD completo** para el ambiente dev:
+
+```
+Push a develop/dev → Tests → SonarCloud → Build → Deploy a ECS
+```
+
+**Características:**
+- ✅ Tests automáticos (Python + Go)
+- ✅ Análisis de calidad con SonarCloud
+- ✅ Quality Gates (80% coverage, 0 bugs/vulnerabilities)
+- ✅ Build y push automático a ECR
+- ✅ Deploy automático a ECS Dev
+- ✅ Health checks post-deployment
+
+**Documentación completa:** [PIPELINE_DEV.md](PIPELINE_DEV.md)
+
+**Para usar el pipeline:**
+```bash
+# 1. Hacer cambios en el código
+git checkout -b feature/nueva-funcionalidad
+
+# 2. Commit y push
+git push origin feature/nueva-funcionalidad
+
+# 3. Crear PR a 'develop'
+# → Pipeline ejecuta tests y SonarCloud automáticamente
+
+# 4. Merge PR
+# → Pipeline ejecuta deploy completo a dev (16-24 min)
+```
+
+---
+
+## 📊 Monitoreo y Calidad de Código
+
+### SonarCloud - Análisis de Calidad
+- **Dashboard:** https://sonarcloud.io
+- **Configuración:** [SONARCLOUD_TEST.md](SONARCLOUD_TEST.md)
+- **Quality Gates:** Coverage ≥80%, Duplicación ≤3%, 0 bugs críticos
+
+### CloudWatch - Monitoreo de Infraestructura
+- **Dashboard:** Métricas de CPU, memoria, ALB, Lambda
+- **Alertas:** Email automático cuando servicios fallan
+- **Configuración:** [TESTING_CLOUDWATCH_ALERTS.md](TESTING_CLOUDWATCH_ALERTS.md)
+
+**Test de alertas CloudWatch:**
+```bash
+# Simular fallo de servicio y recibir email
+bash scripts/test-cloudwatch-alerts.sh dev cpu
+```
+
+---
+
 ## 🚀 Quick Start - Deploy Completo
 
 ### ⚙️ Prerequisito: Configurar Backend S3 (Solo primera vez)

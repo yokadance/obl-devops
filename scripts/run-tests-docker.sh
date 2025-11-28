@@ -22,7 +22,7 @@ if ! command -v docker &> /dev/null; then
 fi
 
 echo -e "\n${CYAN}======================================${NC}"
-echo -e "${CYAN}Ejecutando Tests con Docker${NC}"
+echo -e "${CYAN}Ejecutando Tests localmente${NC}"
 echo -e "${CYAN}======================================${NC}\n"
 
 ERRORS=0

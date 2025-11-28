@@ -5,6 +5,7 @@
 - [Quick Start](#-quick-start---deploy-completo)
 - [CI/CD Pipeline](#-cicd-pipeline-automatizado)
 - [Monitoreo y Calidad](#-monitoreo-y-calidad-de-código)
+- [Testing Local](#-testing-local)
 - [Comandos Útiles](#-comandos-útiles)
 - [Documentación](#-documentación)
 
@@ -25,6 +26,7 @@ Push a develop/dev → Tests → SonarCloud → Build → Deploy a ECS
 - ✅ Build y push automático a ECR
 - ✅ Deploy automático a ECS Dev
 - ✅ Health checks post-deployment
+- ✅ Tests funcionales de endpoints (Postman/Newman)
 
 **Documentación completa:** [PIPELINE_DEV.md](PIPELINE_DEV.md)
 
@@ -61,6 +63,20 @@ git push origin feature/nueva-funcionalidad
 ```bash
 # Simular fallo de servicio y recibir email
 bash scripts/test-cloudwatch-alerts.sh dev cpu
+```
+
+### Testing Funcional - Postman/Newman
+- **Colección:** Tests de endpoints API
+- **Ejecución:** Automática en CI/CD después de deploy
+- **Configuración:** [FUNCTIONAL_TESTING.md](FUNCTIONAL_TESTING.md)
+
+**Ejecutar tests localmente:**
+```bash
+# Contra ambiente local
+./scripts/run-functional-tests.sh local
+
+# Contra AWS Dev
+./scripts/run-functional-tests.sh dev
 ```
 
 ---
@@ -779,6 +795,53 @@ El flujo backend:
 - ALB → Product Service
 - Product Service valida los datos
 - Inserta en PostgreSQL
+
+---
+
+## 🧪 Testing Local
+
+**IMPORTANTE:** Ejecuta tests ANTES de pushear para feedback rápido y no romper el build.
+
+### Setup Git Hook (Recomendado)
+
+```bash
+# Configura hook que ejecuta tests antes de cada push
+./scripts/setup-git-hooks.sh
+
+# Ahora cada git push ejecutará tests automáticamente
+git push  # → Tests se ejecutan antes del push
+```
+
+### Tests Unitarios
+
+```bash
+# Python (Product Service)
+cd app/StockWiz/product-service
+pytest --cov=. --cov-report=term-missing
+
+# Go (API Gateway)
+cd app/StockWiz/api-gateway
+go test ./... -cover
+
+# Go (Inventory Service)
+cd app/StockWiz/inventory-service
+go test ./... -cover
+```
+
+### Tests Funcionales
+
+```bash
+# Contra ambiente local
+./scripts/run-functional-tests.sh local
+
+# Contra AWS Dev
+./scripts/run-functional-tests.sh dev
+
+# URL custom
+./scripts/run-functional-tests.sh custom http://mi-alb.amazonaws.com
+```
+
+**Documentación completa:** [TESTING_BEST_PRACTICES.md](TESTING_BEST_PRACTICES.md)
 
 ---
 

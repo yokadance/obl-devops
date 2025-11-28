@@ -5,9 +5,9 @@ on:
     branches:
       - dev
     paths:
-      - 'app/StockWiz/**'
-      - 'IaC/terraform/**'
-      - '.github/workflows/dev-pipeline.yml'
+      - "app/StockWiz/**"
+      - "IaC/terraform/**"
+      - ".github/workflows/dev-pipeline.yml"
   pull_request:
     branches:
       - develop
@@ -27,13 +27,13 @@ jobs:
     runs-on: ubuntu-latest
 
     # outputs:
-      # quality-gate-status: ${{ steps.sonarcloud-qg.outputs.quality-gate-status }}
+    # quality-gate-status: ${{ steps.sonarcloud-qg.outputs.quality-gate-status }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Para SonarCloud análisis de código nuevo
+          fetch-depth: 0 # Para SonarCloud análisis de código nuevo
 
       # ========================================
       # Python Tests (product-service)
@@ -41,7 +41,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Python dependencies
         working-directory: app/StockWiz/product-service
@@ -68,7 +68,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: "1.21"
 
       - name: Run Go tests - API Gateway
         working-directory: app/StockWiz/api-gateway
@@ -100,13 +100,12 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
       # Quality Gate Check comentado temporalmente (error 403 con SONAR_TOKEN)
-      # Descomentar cuando se arregle el token en GitHub Secrets
-      # - name: SonarCloud Quality Gate Check
-      #   id: sonarcloud-qg
-      #   uses: SonarSource/sonarqube-quality-gate-action@master
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Quality Gate Check
+        id: sonarcloud-qg
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Upload test coverage reports
         uses: actions/upload-artifact@v4

@@ -176,7 +176,40 @@ dev-inventory-service:{git-sha}
 
 ---
 
-### Job 4: `notify` 📢
+### Job 4: `functional-tests` 🧪
+
+**Propósito:** Ejecutar tests funcionales de endpoints con Newman
+
+**Condiciones:**
+- ✅ `deploy-to-ecs` debe completarse exitosamente
+- ✅ Solo en push (NO en PRs)
+
+**Pasos:**
+1. Configure AWS credentials
+2. Get ALB DNS
+3. Install Newman + newman-reporter-htmlextra
+4. Wait for services to be ready (retry con backoff)
+5. Update environment file con ALB DNS
+6. Run Postman collection:
+   - Health checks
+   - Product Service CRUD tests
+   - Inventory Service CRUD tests
+   - Integration tests
+7. Generate HTML report
+8. Upload report artifact
+
+**Tests ejecutados:**
+- Status code validation
+- Response structure validation
+- Response time validation (< 2-3s)
+- Data integrity validation
+
+**Artifacts:**
+- `newman-test-report` → HTML report con resultados detallados
+
+---
+
+### Job 5: `notify` 📢
 
 **Propósito:** Generar resumen del pipeline
 
@@ -192,9 +225,10 @@ dev-inventory-service:{git-sha}
 | Tests & Quality | success |
 | Build & Push | success |
 | Deploy to ECS | success |
+| Functional Tests | success |
 
-### ✅ Deployment Successful!
-The application has been successfully deployed to the **dev** environment.
+### ✅ Deployment & Tests Successful!
+The application has been successfully deployed to the **dev** environment and all functional tests passed.
 ```
 
 ---
@@ -348,12 +382,13 @@ docker build -t test-build .
 
 | Métrica | Valor Esperado | Crítico si > |
 |---------|----------------|--------------|
-| Tiempo total | 16-24 min | 30 min |
+| Tiempo total | 18-28 min | 35 min |
 | Tests Python | 1-2 min | 5 min |
 | Tests Go | 2-3 min | 7 min |
 | SonarCloud | 3-5 min | 10 min |
 | Docker builds | 5-8 min | 15 min |
 | ECS deploy | 3-5 min | 10 min |
+| Functional tests | 2-4 min | 8 min |
 
 ---
 
@@ -369,6 +404,7 @@ docker build -t test-build .
 ## 📚 Documentación Relacionada
 
 - [SONARCLOUD_TEST.md](SONARCLOUD_TEST.md) - Configuración de SonarCloud
+- [FUNCTIONAL_TESTING.md](FUNCTIONAL_TESTING.md) - Testing funcional con Postman/Newman
 - [TESTING_CLOUDWATCH_ALERTS.md](TESTING_CLOUDWATCH_ALERTS.md) - Monitoreo y alertas
 - [README.md](README.md) - Documentación general del proyecto
 

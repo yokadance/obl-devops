@@ -68,6 +68,18 @@ reflex -r '\.go$' -- go test ./...
 
 ### Nivel 2: Antes de Commit (Validación local)
 
+**Opción A: Con Docker (Recomendado - No requiere Python/Go instalado)**
+
+```bash
+# Ejecutar TODOS los tests con un solo comando
+./scripts/run-tests-docker.sh
+
+# Tiempo: ~60-90 segundos
+# Requisito: Solo Docker Desktop
+```
+
+**Opción B: Con instalación local de Python/Go**
+
 ```bash
 # 1. Ejecutar TODOS los tests unitarios
 cd app/StockWiz/product-service
@@ -86,7 +98,7 @@ go test ./... -cover
 
 **Frecuencia:** Antes de cada commit
 
-**Tiempo total:** 30-60 segundos
+**Tiempo total:** 30-90 segundos
 
 ---
 
@@ -149,16 +161,25 @@ git push origin feature/mi-feature
 ### Qué hace
 
 Antes de cada `git push`:
-1. ✅ Ejecuta tests de Python
-2. ✅ Ejecuta tests de Go (api-gateway)
-3. ✅ Ejecuta tests de Go (inventory-service)
+1. ✅ Ejecuta tests usando **Docker** (no requiere Python/Go instalado)
+2. ✅ Ejecuta tests de Python con `python:3.11-slim` image
+3. ✅ Ejecuta tests de Go con `golang:1.21-alpine` image
 4. ❌ **Bloquea el push** si algún test falla
+
+**Requisito único:** Docker Desktop instalado y corriendo
 
 ### Saltar el hook (emergencias)
 
 ```bash
 # NO recomendado, solo en emergencias
 git push --no-verify
+```
+
+### Ejecutar manualmente
+
+```bash
+# Ejecutar los mismos tests que el hook sin hacer push
+./scripts/run-tests-docker.sh
 ```
 
 ---

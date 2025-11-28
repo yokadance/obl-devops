@@ -20,6 +20,7 @@ Push a develop/dev → Tests → SonarCloud → Build → Deploy a ECS
 ```
 
 **Características:**
+
 - ✅ Tests automáticos (Python + Go)
 - ✅ Análisis de calidad con SonarCloud
 - ✅ Quality Gates (80% coverage, 0 bugs/vulnerabilities)

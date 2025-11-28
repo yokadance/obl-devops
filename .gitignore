@@ -32,9 +32,28 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
 
-# Ignore CLI configuration files
-.terraformrc
-terraform.rc
+# ===========================================
+# Testing & Coverage Files
+# ===========================================
 
-# Ignore resultado de test
+# Python coverage
 coverage.xml
+.coverage
+htmlcov/
+.pytest_cache/
+*.pyc
+__pycache__/
+
+# Go coverage
+coverage.out
+*.test
+
+# Newman/Postman reports
+newman-report.html
+newman-report-*.html
+
+# Test artifacts
+.tox/
+.nox/
+.coverage.*
+

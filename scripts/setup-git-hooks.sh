@@ -26,7 +26,7 @@ cat > .git/hooks/pre-push << 'EOF'
 
 #######################################################
 # Git Pre-Push Hook
-# Ejecuta tests usando Docker (no requiere instalar Python/Go)
+# Ejecuta tests usando Docker (requiere poder iniciar los contenedores de forma local)
 #######################################################
 
 # Colores
@@ -38,7 +38,7 @@ NC='\033[0m'
 
 echo -e "\n${CYAN}======================================${NC}"
 echo -e "${CYAN}Pre-Push Hook: Ejecutando Tests${NC}"
-echo -e "${CYAN}(usando Docker)${NC}"
+echo -e "${CYAN}(Localmente)${NC}"
 echo -e "${CYAN}======================================${NC}\n"
 
 # Verificar que Docker esté disponible

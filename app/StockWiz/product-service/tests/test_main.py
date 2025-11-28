@@ -16,8 +16,7 @@ def client():
     """
     Create a test client for the FastAPI app
     """
-    with TestClient(app) as test_client:
-        yield test_client
+    return TestClient(app)
 
 
 class TestHealthEndpoint:

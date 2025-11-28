@@ -34,16 +34,23 @@ redis_client = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global db_pool, redis_client
+
+    # Skip database/redis in test mode
+    if os.getenv("SKIP_DATABASE") == "true":
+        print("⚠️  Running in test mode - skipping database/redis initialization")
+        yield
+        return
+
     # Startup
     database_url = os.getenv("DATABASE_URL", "postgresql://admin:admin123@localhost:5432/microservices_db")
     redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
-    
+
     db_pool = await asyncpg.create_pool(database_url, min_size=2, max_size=10)
     redis_client = await redis.from_url(redis_url, encoding="utf-8", decode_responses=True)
-    
+
     print("✅ Product Service started successfully")
     yield
-    
+
     # Shutdown
     await db_pool.close()
     await redis_client.close()

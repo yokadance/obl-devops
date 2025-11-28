@@ -5,9 +5,9 @@ on:
     branches:
       - dev
     paths:
-      - 'app/StockWiz/**'
-      - 'IaC/terraform/**'
-      - '.github/workflows/dev-pipeline.yml'
+      - "app/StockWiz/**"
+      - "IaC/terraform/**"
+      - ".github/workflows/dev-pipeline.yml"
   pull_request:
     branches:
       - develop
@@ -26,15 +26,14 @@ jobs:
     name: 🧪 Tests & SonarCloud Analysis
     runs-on: ubuntu-latest
 
-    outputs:
-      quality-gate-status: ${{ steps.sonarcloud-qg.outputs.quality-gate-status }}
+    # outputs:
+    # quality-gate-status: ${{ steps.sonarcloud-qg.outputs.quality-gate-status }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Para SonarCloud análisis de código nuevo
-          submodules: recursive  # Checkout del submódulo StockWiz
+          fetch-depth: 0 # Para SonarCloud análisis de código nuevo
 
       # ========================================
       # Python Tests (product-service)
@@ -42,7 +41,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Python dependencies
         working-directory: app/StockWiz/product-service
@@ -61,7 +60,7 @@ jobs:
             echo "    assert True" >> tests/test_placeholder.py
           fi
           pytest --cov=. --cov-report=xml --cov-report=term
-        continue-on-error: true
+        continue-on-error: false
 
       # ========================================
       # Go Tests (api-gateway, inventory-service)
@@ -69,7 +68,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: "1.21"
 
       - name: Run Go tests - API Gateway
         working-directory: app/StockWiz/api-gateway
@@ -100,13 +99,13 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
 
+      # Quality Gate Check comentado temporalmente (error 403 con SONAR_TOKEN)
       - name: SonarCloud Quality Gate Check
         id: sonarcloud-qg
         uses: SonarSource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: false
 
       - name: Upload test coverage reports
         uses: actions/upload-artifact@v4
@@ -134,8 +133,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -312,12 +309,99 @@ jobs:
           echo "✅ Health checks completed"
 
   # ========================================
-  # Job 4: Notification (Success/Failure)
+  # Job 4:  API Tests (Postman) 🪲
+  # ========================================
+  functional-tests:
+    name: 🧪 Postman 🧑🏻‍🚀 API Tests
+    runs-on: ubuntu-latest
+    needs: deploy-to-ecs
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/dev')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get ALB DNS
+        id: get-alb
+        run: |
+          ALB_DNS=$(aws elbv2 describe-load-balancers \
+            --names ${{ env.ENVIRONMENT }}-stockwiz-alb \
+            --query 'LoadBalancers[0].DNSName' \
+            --output text \
+            --region ${{ env.AWS_REGION }})
+          echo "alb_dns=$ALB_DNS" >> $GITHUB_OUTPUT
+          echo "ALB DNS: http://$ALB_DNS"
+
+      - name: Install Newman
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+
+      - name: Wait for services to be ready
+        run: |
+          echo "⏳ Waiting for services to be fully ready..."
+          sleep 30
+
+          # Retry health check with backoff
+          MAX_RETRIES=5
+          RETRY_COUNT=0
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if curl -f http://${{ steps.get-alb.outputs.alb_dns }}/health; then
+              echo "✅ Services are ready"
+              break
+            fi
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            echo "Retry $RETRY_COUNT/$MAX_RETRIES - waiting 10s..."
+            sleep 10
+          done
+
+      - name: Run Postman Collection with Newman
+        run: |
+          # Update environment file with actual ALB DNS
+          sed -i "s|http://localhost:8080|http://${{ steps.get-alb.outputs.alb_dns }}|g" tests/postman/dev.postman_environment.json
+
+          # Run Newman tests
+          newman run tests/postman/StockWiz-API-Tests.postman_collection.json \
+            -e tests/postman/dev.postman_environment.json \
+            --reporters cli,htmlextra \
+            --reporter-htmlextra-export newman-report.html \
+            --color on \
+            --disable-unicode
+        continue-on-error: false
+
+      - name: Upload Newman Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-test-report
+          path: newman-report.html
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🧪 Functional Tests Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ env.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Base URL:** http://${{ steps.get-alb.outputs.alb_dns }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Functional tests completed. Check artifacts for detailed report." >> $GITHUB_STEP_SUMMARY
+
+  # ========================================
+  # Job 5: Notification (Success/Failure)
   # ========================================
   notify:
     name: 📢 Send Notification
     runs-on: ubuntu-latest
-    needs: [test-and-quality, build-and-push, deploy-to-ecs]
+    needs: [test-and-quality, build-and-push, deploy-to-ecs, functional-tests]
     if: always()
 
     steps:
@@ -330,12 +414,13 @@ jobs:
           echo "| Tests & Quality | ${{ needs.test-and-quality.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Build & Push | ${{ needs.build-and-push.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Deploy to ECS | ${{ needs.deploy-to-ecs.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Functional Tests | ${{ needs.functional-tests.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ "${{ needs.deploy-to-ecs.result }}" == "success" ]; then
-            echo "### ✅ Deployment Successful!" >> $GITHUB_STEP_SUMMARY
-            echo "The application has been successfully deployed to the **dev** environment." >> $GITHUB_STEP_SUMMARY
+          if [ "${{ needs.functional-tests.result }}" == "success" ]; then
+            echo "### ✅ Deployment & Tests Successful!" >> $GITHUB_STEP_SUMMARY
+            echo "The application has been successfully deployed to the **dev** environment and all functional tests passed." >> $GITHUB_STEP_SUMMARY
           else
-            echo "### ❌ Deployment Failed" >> $GITHUB_STEP_SUMMARY
+            echo "### ❌ Deployment or Tests Failed" >> $GITHUB_STEP_SUMMARY
             echo "Please check the logs for more details." >> $GITHUB_STEP_SUMMARY
           fi

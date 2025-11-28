@@ -20,13 +20,13 @@ echo -e "${CYAN}======================================${NC}\n"
 # Crear directorio de hooks si no existe
 mkdir -p .git/hooks
 
-# Crear pre-push hook
+# Crear pre-push hook usando Docker
 cat > .git/hooks/pre-push << 'EOF'
 #!/bin/bash
 
 #######################################################
 # Git Pre-Push Hook
-# Ejecuta tests antes de permitir push
+# Ejecuta tests usando Docker (no requiere instalar Python/Go)
 #######################################################
 
 # Colores
@@ -38,56 +38,29 @@ NC='\033[0m'
 
 echo -e "\n${CYAN}======================================${NC}"
 echo -e "${CYAN}Pre-Push Hook: Ejecutando Tests${NC}"
+echo -e "${CYAN}(usando Docker)${NC}"
 echo -e "${CYAN}======================================${NC}\n"
 
-# Flag para controlar si hubo errores
-ERRORS=0
-
-# Función para ejecutar comando y capturar resultado
-run_test() {
-    local name=$1
-    local cmd=$2
-
-    echo -e "${YELLOW}Ejecutando: $name${NC}"
-
-    if eval "$cmd"; then
-        echo -e "${GREEN}✓ $name pasó${NC}\n"
-    else
-        echo -e "${RED}✗ $name falló${NC}\n"
-        ERRORS=$((ERRORS + 1))
-    fi
-}
-
-# 1. Python tests (product-service)
-if [ -d "app/StockWiz/product-service/tests" ]; then
-    run_test "Python Tests (Product Service)" \
-        "cd app/StockWiz/product-service && pytest --cov=. --cov-report=term-missing -v && cd - > /dev/null"
+# Verificar que Docker esté disponible
+if ! command -v docker &> /dev/null; then
+    echo -e "${RED}⚠️  Docker no está disponible${NC}"
+    echo -e "${YELLOW}Puedes:${NC}"
+    echo -e "  1. Instalar Docker y volver a intentar"
+    echo -e "  2. Skip hook: git push --no-verify"
+    echo ""
+    exit 1
 fi
 
-# 2. Go tests (api-gateway)
-if [ -f "app/StockWiz/api-gateway/go.mod" ]; then
-    run_test "Go Tests (API Gateway)" \
-        "cd app/StockWiz/api-gateway && go test ./... -v && cd - > /dev/null"
-fi
+# Ejecutar script de tests con Docker
+./scripts/run-tests-docker.sh
 
-# 3. Go tests (inventory-service)
-if [ -f "app/StockWiz/inventory-service/go.mod" ]; then
-    run_test "Go Tests (Inventory Service)" \
-        "cd app/StockWiz/inventory-service && go test ./... -v && cd - > /dev/null"
-fi
+EXIT_CODE=$?
 
-# Resultados finales
-echo -e "${CYAN}======================================${NC}"
-
-if [ $ERRORS -eq 0 ]; then
-    echo -e "${GREEN}✓ Todos los tests pasaron${NC}"
-    echo -e "${GREEN}✓ Push permitido${NC}"
-    echo -e "${CYAN}======================================${NC}\n"
+if [ $EXIT_CODE -eq 0 ]; then
+    echo -e "${GREEN}✓ Push permitido${NC}\n"
     exit 0
 else
-    echo -e "${RED}✗ $ERRORS test(s) fallaron${NC}"
     echo -e "${RED}✗ Push bloqueado${NC}"
-    echo -e "${CYAN}======================================${NC}\n"
     echo -e "${YELLOW}Opciones:${NC}"
     echo -e "  1. Arregla los tests y vuelve a intentar"
     echo -e "  2. Skip hook: git push --no-verify (no recomendado)"

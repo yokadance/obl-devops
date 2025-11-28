@@ -803,21 +803,25 @@ El flujo backend:
 
 **IMPORTANTE:** Ejecuta tests ANTES de pushear para feedback rápido y no romper el build.
 
-### Setup Git Hook (Recomendado)
+### Opción A: Con Docker (Recomendado - No requiere Python/Go instalado)
 
 ```bash
-# Configura hook que ejecuta tests antes de cada push
-./scripts/setup-git-hooks.sh
+# 1. Ejecutar todos los tests con Docker
+./scripts/run-tests-docker.sh
 
-# Ahora cada git push ejecutará tests automáticamente
-git push  # → Tests se ejecutan antes del push
+# 2. Setup git hook (automático en cada push)
+./scripts/setup-git-hooks.sh
+git push  # → Tests se ejecutan automáticamente
 ```
 
-### Tests Unitarios
+**Requisitos:** Solo Docker Desktop
+
+### Opción B: Instalación Local (Si ya tienes Python/Go)
 
 ```bash
 # Python (Product Service)
 cd app/StockWiz/product-service
+pip install -r requirements.txt pytest pytest-cov httpx
 pytest --cov=. --cov-report=term-missing
 
 # Go (API Gateway)

@@ -1,0 +1,100 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: microservices_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d microservices_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microservices_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - microservices_network
+
+  product_service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product_service
+    environment:
+      DATABASE_URL: postgresql://admin:admin123@postgres:5432/microservices_db
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - microservices_network
+    restart: unless-stopped
+
+  inventory_service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory_service
+    environment:
+      DATABASE_URL: postgres://admin:admin123@postgres:5432/microservices_db?sslmode=disable
+      REDIS_URL: redis:6379
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - microservices_network
+    restart: unless-stopped
+
+  api_gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api_gateway
+    environment:
+      PRODUCT_SERVICE_URL: http://product_service:8001
+      INVENTORY_SERVICE_URL: http://inventory_service:8002
+      REDIS_URL: redis:6379
+    ports:
+      - "8000:8000"
+    depends_on:
+      - product_service
+      - inventory_service
+    networks:
+      - microservices_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  microservices_network:
+    driver: bridge

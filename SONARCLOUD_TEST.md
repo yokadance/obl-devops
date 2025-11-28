@@ -110,10 +110,9 @@ app/StockWiz/
     └── coverage.xml       (auto-generado para pytest)
 ```
 
-**⚠️ IMPORTANTE - Submódulo Git:**
-- `app/StockWiz` es un submódulo git separado
-- El workflow de GitHub Actions ya está configurado con `submodules: recursive` para hacer checkout automático
-- Esto es necesario para que los tests y análisis funcionen correctamente en CI/CD
+**📁 Estructura:**
+- `app/StockWiz` contiene todo el código fuente de la aplicación
+- Los workflows de GitHub Actions hacen checkout automático del repositorio completo
 
 ---
 

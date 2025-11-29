@@ -1,1 +1,1 @@
-{"statusCode": 200, "body": "{\"message\": \"Simulaci\\u00f3n de falla: cpu\", \"environment\": \"dev\", \"timestamp\": \"2025-11-26T00:01:05.984474\"}"}
+{"statusCode": 200, "body": "{\"message\": \"Simulaci\\u00f3n de falla: database\", \"environment\": \"dev\", \"timestamp\": \"2025-11-28T23:44:07.377849\"}"}

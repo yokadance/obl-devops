@@ -10,7 +10,6 @@ import (
 	"os"
 	"strconv"
 	"time"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-redis/redis/v8"
@@ -380,3 +379,4 @@ func invalidateInventoryCaches(productID, inventoryID int) {
 
 	log.Printf("Cache invalidated for product_id=%d, inventory_id=%d", productID, inventoryID)
 }
+

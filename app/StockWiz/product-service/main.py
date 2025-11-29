@@ -43,7 +43,17 @@ async def lifespan(app: FastAPI):
         return
 
     # Startup
-    database_url = os.getenv("DATABASE_URL", "postgresql://admin:admin123@localhost:5432/microservices_db")
+    # Obtener credenciales desde variables de entorno (NO hardcodear)
+    db_user = os.getenv("DB_USER", "admin")
+    db_password = os.getenv("DB_PASSWORD", "")
+    db_host = os.getenv("DB_HOST", "localhost")
+    db_port = os.getenv("DB_PORT", "5432")
+    db_name = os.getenv("DB_NAME", "microservices_db")
+
+    if not db_password:
+        raise ValueError("DB_PASSWORD environment variable is required")
+
+    database_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
 
     db_pool = await asyncpg.create_pool(database_url, min_size=2, max_size=10)

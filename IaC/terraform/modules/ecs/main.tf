@@ -56,15 +56,15 @@ resource "aws_ecs_task_definition" "stockwiz" {
       environment = [
         {
           name  = "POSTGRES_USER"
-          value = "admin"
+          value = var.db_user
         },
         {
           name  = "POSTGRES_PASSWORD"
-          value = "admin123"
+          value = var.db_password
         },
         {
           name  = "POSTGRES_DB"
-          value = "microservices_db"
+          value = var.db_name
         }
       ]
 
@@ -78,7 +78,7 @@ resource "aws_ecs_task_definition" "stockwiz" {
       }
 
       healthCheck = {
-        command     = ["CMD-SHELL", "pg_isready -U admin -d microservices_db || exit 1"]
+        command     = ["CMD-SHELL", "pg_isready -U ${var.db_user} -d ${var.db_name} || exit 1"]
         interval    = 30
         timeout     = 10
         retries     = 5
@@ -202,8 +202,24 @@ resource "aws_ecs_task_definition" "stockwiz" {
 
       environment = [
         {
-          name  = "DATABASE_URL"
-          value = "postgresql://admin:admin123@localhost:5432/microservices_db"
+          name  = "DB_USER"
+          value = var.db_user
+        },
+        {
+          name  = "DB_PASSWORD"
+          value = var.db_password
+        },
+        {
+          name  = "DB_HOST"
+          value = "localhost"
+        },
+        {
+          name  = "DB_PORT"
+          value = "5432"
+        },
+        {
+          name  = "DB_NAME"
+          value = var.db_name
         },
         {
           name  = "REDIS_URL"
@@ -255,8 +271,24 @@ resource "aws_ecs_task_definition" "stockwiz" {
 
       environment = [
         {
-          name  = "DATABASE_URL"
-          value = "postgres://admin:admin123@localhost:5432/microservices_db?sslmode=disable"
+          name  = "DB_USER"
+          value = var.db_user
+        },
+        {
+          name  = "DB_PASSWORD"
+          value = var.db_password
+        },
+        {
+          name  = "DB_HOST"
+          value = "localhost"
+        },
+        {
+          name  = "DB_PORT"
+          value = "5432"
+        },
+        {
+          name  = "DB_NAME"
+          value = var.db_name
         },
         {
           name  = "REDIS_URL"

@@ -42,11 +42,32 @@ type InventoryCreate struct {
 	Warehouse string `json:"warehouse"`
 }
 
+// Helper function para obtener env vars con default
+func getEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
+
 func main() {
-	// Conectar a PostgreSQL
+	// Conectar a PostgreSQL - Obtener credenciales desde variables de entorno
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://admin:admin123@localhost:5432/microservices_db?sslmode=disable"
+		// Construir URL desde componentes individuales (NO hardcodear password)
+		dbUser := getEnv("DB_USER", "admin")
+		dbPassword := os.Getenv("DB_PASSWORD")
+		dbHost := getEnv("DB_HOST", "localhost")
+		dbPort := getEnv("DB_PORT", "5432")
+		dbName := getEnv("DB_NAME", "microservices_db")
+
+		if dbPassword == "" {
+			log.Fatal("DB_PASSWORD environment variable is required")
+		}
+
+		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+			dbUser, dbPassword, dbHost, dbPort, dbName)
 	}
 
 	var err error

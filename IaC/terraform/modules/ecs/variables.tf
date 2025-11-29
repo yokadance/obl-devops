@@ -76,5 +76,23 @@ variable "alb_dns_name" {
   type        = string
 }
 
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "Database password (should come from GitHub Secrets)"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "microservices_db"
+}
+
 
 //Description autogeneradas con cursor

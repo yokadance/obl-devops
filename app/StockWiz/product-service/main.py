@@ -7,7 +7,6 @@ import json
 import os
 from contextlib import asynccontextmanager
 
-
 # Modelos Pydantic
 class ProductCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)

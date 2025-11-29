@@ -1,6 +1,6 @@
-# 🚀 Pipeline CI/CD - Ambiente Dev
+# 🚀 Pipeline CI/CD - StockWiz
 
-Pipeline automatizado para el ambiente de desarrollo de StockWiz que ejecuta tests, análisis de calidad y deployment automático a AWS ECS.
+Pipeline automatizado que ejecuta tests, análisis de calidad y deployment automático a AWS ECS.
 
 ## 📋 Tabla de Contenidos
 
@@ -403,9 +403,9 @@ docker build -t test-build .
 
 ## 📚 Documentación Relacionada
 
-- [SONARCLOUD_TEST.md](SONARCLOUD_TEST.md) - Configuración de SonarCloud
-- [FUNCTIONAL_TESTING.md](FUNCTIONAL_TESTING.md) - Testing funcional con Postman/Newman
-- [TESTING_CLOUDWATCH_ALERTS.md](TESTING_CLOUDWATCH_ALERTS.md) - Monitoreo y alertas
-- [README.md](README.md) - Documentación general del proyecto
+- [README.md](README.md) - Introducción y arquitectura general
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Guía de deployment
+- [TESTING.md](TESTING.md) - Guía de testing
+- [MONITORING.md](MONITORING.md) - Monitoreo y alertas
 
 ---

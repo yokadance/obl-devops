@@ -13,7 +13,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copiar código fuente y archivos estáticos
-COPY main.go .
+COPY *.go ./
 COPY static ./static
 
 # Compilar aplicación con optimizaciones

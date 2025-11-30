@@ -176,10 +176,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-info.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-api-gateway:$IMAGE_TAG .
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-api-gateway:latest .
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-api-gateway:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-api-gateway:latest
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-api-gateway:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-api-gateway:latest .
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-api-gateway:$IMAGE_TAG
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-api-gateway:latest
 
       - name: Build and push - Product Service
         working-directory: app/StockWiz/product-service
@@ -187,10 +187,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-info.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-product-service:$IMAGE_TAG .
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-product-service:latest .
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-product-service:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-product-service:latest
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-product-service:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-product-service:latest .
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-product-service:$IMAGE_TAG
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-product-service:latest
 
       - name: Build and push - Inventory Service
         working-directory: app/StockWiz/inventory-service
@@ -198,10 +198,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-info.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-inventory-service:$IMAGE_TAG .
-          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-inventory-service:latest .
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-inventory-service:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-inventory-service:latest
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-inventory-service:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-inventory-service:latest .
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-inventory-service:$IMAGE_TAG
+          docker push $ECR_REGISTRY/${{ env.ENVIRONMENT }}-stockwiz-inventory-service:latest
 
       - name: Save build info
         id: build-info

@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -16,23 +15,6 @@ import (
 
 //go:embed static/*
 var staticFiles embed.FS
-
-type ErrorResponse struct {
-	Error   string `json:"error"`
-	Message string `json:"message"`
-}
-
-type ProductWithInventory struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	Price       float64 `json:"price"`
-	Category    *string `json:"category"`
-	Inventory   *struct {
-		Quantity  int    `json:"quantity"`
-		Warehouse string `json:"warehouse"`
-	} `json:"inventory,omitempty"`
-}
 
 func main() {
 	productServiceURL := getEnv("PRODUCT_SERVICE_URL", "http://localhost:8001")
@@ -75,14 +57,6 @@ func main() {
 	if err := http.ListenAndServe(":8000", r); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func getEnv(key, defaultValue string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		return defaultValue
-	}
-	return value
 }
 
 func setupRouter(server *Server, staticFS fs.FS) *chi.Mux {

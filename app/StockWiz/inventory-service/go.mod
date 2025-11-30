@@ -3,6 +3,7 @@ module inventory-service
 go 1.21
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/lib/pq v1.10.9

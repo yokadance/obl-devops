@@ -236,43 +236,24 @@ jobs:
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "registry=$ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com" >> $GITHUB_OUTPUT
 
-      - name: Update ECS Service - API Gateway
+      - name: Update ECS Service - StockWiz
         run: |
           aws ecs update-service \
             --cluster ${{ env.ENVIRONMENT }}-cluster \
-            --service ${{ env.ENVIRONMENT }}-api-gateway \
+            --service ${{ env.ENVIRONMENT }}-stockwiz \
             --force-new-deployment \
             --region ${{ env.AWS_REGION }}
 
-      - name: Update ECS Service - Product Service
+      - name: Wait for service to stabilize
         run: |
-          aws ecs update-service \
-            --cluster ${{ env.ENVIRONMENT }}-cluster \
-            --service ${{ env.ENVIRONMENT }}-product-service \
-            --force-new-deployment \
-            --region ${{ env.AWS_REGION }}
-
-      - name: Update ECS Service - Inventory Service
-        run: |
-          aws ecs update-service \
-            --cluster ${{ env.ENVIRONMENT }}-cluster \
-            --service ${{ env.ENVIRONMENT }}-inventory-service \
-            --force-new-deployment \
-            --region ${{ env.AWS_REGION }}
-
-      - name: Wait for services to stabilize
-        run: |
-          echo "⏳ Esperando a que los servicios se estabilicen..."
+          echo "⏳ Esperando a que el servicio se estabilice..."
 
           aws ecs wait services-stable \
             --cluster ${{ env.ENVIRONMENT }}-cluster \
-            --services \
-              ${{ env.ENVIRONMENT }}-api-gateway \
-              ${{ env.ENVIRONMENT }}-product-service \
-              ${{ env.ENVIRONMENT }}-inventory-service \
+            --services ${{ env.ENVIRONMENT }}-stockwiz \
             --region ${{ env.AWS_REGION }}
 
-          echo "✅ Todos los servicios están estables"
+          echo "✅ Servicio estable y desplegado correctamente"
 
       - name: Get deployment status
         id: deployment-status

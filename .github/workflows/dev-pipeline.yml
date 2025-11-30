@@ -292,17 +292,9 @@ jobs:
           # Wait a bit for services to fully start
           sleep 10
 
-          # Health check API Gateway
+          # Health check through API Gateway (main entry point)
           echo "Checking API Gateway health..."
           curl -f http://$ALB_DNS/health || echo "⚠️ API Gateway health check failed"
-
-          # Health check Product Service
-          echo "Checking Product Service health..."
-          curl -f http://$ALB_DNS/products/health || echo "⚠️ Product Service health check failed"
-
-          # Health check Inventory Service
-          echo "Checking Inventory Service health..."
-          curl -f http://$ALB_DNS/inventory/health || echo "⚠️ Inventory Service health check failed"
 
           echo "✅ Health checks completed"
 

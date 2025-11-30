@@ -13,7 +13,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copiar código fuente
-COPY main.go .
+COPY *.go ./
 
 # Compilar aplicación
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o inventory-service .

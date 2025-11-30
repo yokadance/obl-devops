@@ -88,6 +88,11 @@ module "ecs" {
   # ALB DNS para comunicacion entre servicios
   alb_dns_name = module.alb.alb_dns_name
 
+  # Database credentials (from variables/secrets)
+  db_user     = var.db_user
+  db_password = var.db_password
+  db_name     = var.db_name
+
   depends_on = [module.alb, module.ecr]
 }
 

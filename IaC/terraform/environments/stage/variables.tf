@@ -52,3 +52,22 @@ variable "ecs_task_memory" {
   type        = number
   default     = 512
 }
+
+# Database Variables
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "Database password (must be provided via GitHub Secrets or environment)"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "microservices_db"
+}

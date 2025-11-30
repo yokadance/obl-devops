@@ -118,7 +118,7 @@ jobs:
             exit 0
           elif [ "$QUALITY_GATE_STATUS" = "ERROR" ]; then
             echo "✗ Quality Gate failed"
-            exit 0
+            exit 1
           else
             echo "⚠ Quality Gate status: $QUALITY_GATE_STATUS (allowing to continue)"
             exit 0

@@ -267,7 +267,7 @@ jobs:
 
           # Get ALB DNS
           ALB_DNS=$(aws elbv2 describe-load-balancers \
-            --names ${{ env.ENVIRONMENT }}-stockwiz-alb \
+            --names ${{ env.ENVIRONMENT }}-alb \
             --query 'LoadBalancers[0].DNSName' \
             --output text \
             --region ${{ env.AWS_REGION }})
@@ -284,7 +284,7 @@ jobs:
           echo "🏥 Running health checks..."
 
           ALB_DNS=$(aws elbv2 describe-load-balancers \
-            --names ${{ env.ENVIRONMENT }}-stockwiz-alb \
+            --names ${{ env.ENVIRONMENT }}-alb \
             --query 'LoadBalancers[0].DNSName' \
             --output text \
             --region ${{ env.AWS_REGION }})
@@ -331,7 +331,7 @@ jobs:
         id: get-alb
         run: |
           ALB_DNS=$(aws elbv2 describe-load-balancers \
-            --names ${{ env.ENVIRONMENT }}-stockwiz-alb \
+            --names ${{ env.ENVIRONMENT }}-alb \
             --query 'LoadBalancers[0].DNSName' \
             --output text \
             --region ${{ env.AWS_REGION }})

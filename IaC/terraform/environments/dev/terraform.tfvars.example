@@ -1,6 +1,6 @@
 # Terraform Variables - Dev Environment
 #
-# Copia este archivo a terraform.tfvars y configura las variables
+# Renombra este archivo a terraform.tfvars y configura las variables
 # NUNCA commitees el archivo terraform.tfvars (está en .gitignore)
 
 # AWS Region

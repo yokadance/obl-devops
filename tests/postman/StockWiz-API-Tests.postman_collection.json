@@ -37,78 +37,12 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Product Service Health",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 2000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
-                  "});",
-                  "",
-                  "pm.test(\"Service is healthy\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('healthy');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/products/health",
-              "host": ["{{base_url}}"],
-              "path": ["products", "health"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Inventory Service Health",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test(\"Response time is less than 2000ms\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
-                  "});",
-                  "",
-                  "pm.test(\"Service is healthy\", function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.status).to.eql('healthy');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/inventory/health",
-              "host": ["{{base_url}}"],
-              "path": ["inventory", "health"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
             }
           },
           "response": []
@@ -146,9 +80,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/products",
-              "host": ["{{base_url}}"],
-              "path": ["products"]
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
             }
           },
           "response": []
@@ -194,9 +132,13 @@
               "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"Product created by automated tests\",\n  \"price\": 99.99,\n  \"category\": \"testing\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/products",
-              "host": ["{{base_url}}"],
-              "path": ["products"]
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
             }
           },
           "response": []
@@ -227,9 +169,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/products/{{product_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["products", "{{product_id}}"]
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
             }
           },
           "response": []
@@ -267,9 +214,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/inventory",
-              "host": ["{{base_url}}"],
-              "path": ["inventory"]
+              "raw": "{{base_url}}/api/inventory",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory"
+              ]
             }
           },
           "response": []
@@ -308,9 +259,13 @@
               "raw": "{\n  \"product_id\": \"{{product_id}}\",\n  \"quantity\": 100,\n  \"location\": \"warehouse-A\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/inventory",
-              "host": ["{{base_url}}"],
-              "path": ["inventory"]
+              "raw": "{{base_url}}/api/inventory",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory"
+              ]
             }
           },
           "response": []
@@ -345,8 +300,12 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/health",
-              "host": ["{{base_url}}"],
-              "path": ["health"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
             }
           },
           "response": []

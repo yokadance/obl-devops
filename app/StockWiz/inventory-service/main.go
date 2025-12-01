@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-redis/redis/v8"
@@ -23,6 +24,7 @@ var (
 )
 
 func main() {
+	//TODO: ver de poner esto en secretes de git
 	// Conectar a PostgreSQL - Obtener credenciales desde variables de entorno
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -351,4 +353,3 @@ func invalidateInventoryCaches(productID, inventoryID int) {
 
 	log.Printf("Cache invalidated for product_id=%d, inventory_id=%d", productID, inventoryID)
 }
-

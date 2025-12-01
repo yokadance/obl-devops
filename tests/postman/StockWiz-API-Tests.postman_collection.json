@@ -70,7 +70,14 @@
                   "",
                   "pm.test(\"Response time is less than 3000ms\", function () {",
                   "    pm.expect(pm.response.responseTime).to.be.below(3000);",
-                  "});"
+                  "});",
+                  "",
+                  "// Save first product ID for later tests",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.length > 0) {",
+                  "    pm.environment.set(\"product_id\", jsonData[0].id);",
+                  "    console.log(\"Saved product_id: \" + jsonData[0].id);",
+                  "}"
                 ],
                 "type": "text/javascript"
               }

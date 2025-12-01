@@ -260,7 +260,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"product_id\": \"{{product_id}}\",\n  \"quantity\": 100,\n  \"location\": \"warehouse-A\"\n}"
+              "raw": "{\n  \"product_id\": {{product_id}},\n  \"quantity\": 100,\n  \"warehouse\": \"warehouse-A\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/inventory",

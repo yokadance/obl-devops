@@ -187,8 +187,8 @@ Base URL: http://dev-alb-XXXXXXXXX.us-east-1.elb.amazonaws.com
 
 ════════════════════════════════════════════════════════════════════════════════
 
-                         COSTOS ESTIMADOS MENSUALES
-                         ──────────────────────────
+                         COSTOS ESTIMADOS MENSUALES CHAT GPT
+                         ────────────────────────────────────
 
 ┌──────────────────────────────────────┬─────────────────────┐
 │  Recurso                             │  Costo Aprox. (USD) │

@@ -1,3 +1,0 @@
-[submodule "app/StockWiz"]
-	path = app/StockWiz
-	url = https://github.com/ORT-ATI-CertificadoDevOps/StockWiz.git

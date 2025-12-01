@@ -33,3 +33,41 @@ variable "private_subnet_cidrs" {
   type        = list(string)
   default     = ["10.0.10.0/24", "10.0.11.0/24"]
 }
+
+# ECS Variables
+variable "ecs_desired_count" {
+  description = "Desired number of ECS tasks per service"
+  type        = number
+  default     = 1
+}
+
+variable "ecs_task_cpu" {
+  description = "CPU units for ECS tasks (256 = 0.25 vCPU)"
+  type        = number
+  default     = 256
+}
+
+variable "ecs_task_memory" {
+  description = "Memory (MB) for ECS tasks"
+  type        = number
+  default     = 512
+}
+
+# Database Variables
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "Database password (must be provided via GitHub Secrets or environment)"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "microservices_db"
+}

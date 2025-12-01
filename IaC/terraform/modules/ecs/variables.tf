@@ -17,3 +17,82 @@ variable "ecs_tasks_security_group_id" {
   description = "Security group ID for ECS tasks"
   type        = string
 }
+
+variable "api_gateway_target_group_arn" {
+  description = "ARN of API Gateway target group"
+  type        = string
+}
+
+variable "product_service_target_group_arn" {
+  description = "ARN of Product Service target group"
+  type        = string
+}
+
+variable "inventory_service_target_group_arn" {
+  description = "ARN of Inventory Service target group"
+  type        = string
+}
+
+variable "api_gateway_ecr_url" {
+  description = "ECR repository URL for API Gateway"
+  type        = string
+}
+
+variable "product_service_ecr_url" {
+  description = "ECR repository URL for Product Service"
+  type        = string
+}
+
+variable "inventory_service_ecr_url" {
+  description = "ECR repository URL for Inventory Service"
+  type        = string
+}
+
+variable "postgres_ecr_url" {
+  description = "ECR repository URL for PostgreSQL"
+  type        = string
+}
+
+variable "desired_count" {
+  description = "Desired number of tasks"
+  type        = number
+  default     = 1
+}
+
+variable "cpu" {
+  description = "CPU units for the task"
+  type        = number
+  default     = 256
+}
+
+variable "memory" {
+  description = "Memory (MB) for the task"
+  type        = number
+  default     = 512
+}
+
+variable "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer"
+  type        = string
+}
+
+variable "db_user" {
+  description = "Database username"
+  type        = string
+  default     = "admin"
+}
+
+variable "db_password" {
+  description = "Database password (should come from GitHub Secrets)"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = "microservices_db"
+}
+
+
+//Description autogeneradas con cursor

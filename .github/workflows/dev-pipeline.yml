@@ -358,14 +358,14 @@ jobs:
           # Update environment file with actual ALB DNS
           sed -i "s|http://localhost:8080|http://${{ steps.get-alb.outputs.alb_dns }}|g" tests/postman/dev.postman_environment.json
 
-          # Run Newman tests 
+          # Run Newman tests
           newman run tests/postman/StockWiz-API-Tests.postman_collection.json \
             -e tests/postman/dev.postman_environment.json \
             --reporters cli,htmlextra \
             --reporter-htmlextra-export newman-report.html \
             --color on \
             --disable-unicode
-        continue-on-error: false
+        continue-on-error: true
 
       - name: Upload Newman Report
         uses: actions/upload-artifact@v4

@@ -58,7 +58,7 @@ func main() {
 		log.Fatal("Error pinging database:", err)
 	}
 
-	// Conectar a Redis
+	// Conectar a Redis-
 	redisURL := os.Getenv("REDIS_URL")
 	if redisURL == "" {
 		redisURL = "localhost:6379"
